@@ -32,4 +32,3 @@
 !/packages/flutter_tools/test/data/dart_dependencies_setup/packages
 
 # Secret Keys
-lib/core/constants.dart
