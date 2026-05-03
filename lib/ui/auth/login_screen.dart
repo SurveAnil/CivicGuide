@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/auth_service.dart';
 import '../../providers/app_state.dart';
 import '../../core/theme.dart';
+import '../../core/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   final AppState appState;
@@ -135,19 +136,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             ))
                           : kIsWeb
                               ? Center(
-                                  child: Semantics(
-                                    button: true,
-                                    label: 'Sign in with Google',
-                                    child: (GoogleSignInPlatform.instance
-                                            as dynamic)
-                                        .renderButton(
-                                      configuration: GSIButtonConfiguration(
-                                        theme: GSIButtonTheme.filledBlue,
-                                        size: GSIButtonSize.large,
-                                        shape: GSIButtonShape.pill,
-                                      ),
-                                    ),
-                                  ),
+                                  child: AppConstants.googleWebClientId.isEmpty
+                                      ? const Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Text(
+                                            '⚠️ CONFIG ERROR: GOOGLE_WEB_CLIENT_ID is empty.\nCheck your GitHub Secret names.',
+                                            style: TextStyle(color: Colors.red, fontSize: 12),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                      : Semantics(
+                                          button: true,
+                                          label: 'Sign in with Google',
+                                          child: (GoogleSignInPlatform.instance
+                                                  as dynamic)
+                                              .renderButton(
+                                            configuration: GSIButtonConfiguration(
+                                              theme: GSIButtonTheme.filledBlue,
+                                              size: GSIButtonSize.large,
+                                              shape: GSIButtonShape.pill,
+                                            ),
+                                          ),
+                                        ),
                                 )
                               : Semantics(
                                   button: true,
