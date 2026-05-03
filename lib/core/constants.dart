@@ -8,11 +8,11 @@ class AppConstants {
       'Hello! I am your non-partisan CivicGuide. I can help you understand local election processes. To get started, where will you be voting?';
 
   /// Google Civic Information API Key.
-  static const String googleCloudApiKey = 'YOUR_GOOGLE_CLOUD_API_KEY';
+  static const String googleCloudApiKey = String.fromEnvironment('GOOGLE_CLOUD_API_KEY');
       
   /// Gemini AI API Key for chat and OCR capabilities.
-  static const String geminiApiKey = 'YOUR_GEMINI_API_KEY';
+  static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
   /// Google Client ID for Web (Required for Sign-In)
-  static const String googleWebClientId = 'YOUR_GOOGLE_WEB_CLIENT_ID';
+  static const String googleWebClientId = String.fromEnvironment('GOOGLE_WEB_CLIENT_ID');
 }
