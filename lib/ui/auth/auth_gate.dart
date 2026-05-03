@@ -32,15 +32,22 @@ class _AuthGateState extends State<AuthGate> {
     super.dispose();
   }
 
+  bool _lastGuestStatus = false;
+
   void _onAppStateChanged() {
-    // Rebuild when guest mode changes
-    if (mounted) setState(() {});
+    // ONLY rebuild if the guest mode actually toggled.
+    // This prevents "disco blinking" when checklist or language updates.
+    if (widget.appState.isGuest != _lastGuestStatus) {
+      _lastGuestStatus = widget.appState.isGuest;
+      if (mounted) setState(() {});
+    }
   }
 
   Future<void> _checkGuestStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final guest = prefs.getBool('guest_mode') ?? false;
     if (mounted) {
+      _lastGuestStatus = guest;
       widget.appState.setGuest(guest);
       setState(() => _checkingGuest = false);
     }

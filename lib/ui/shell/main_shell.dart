@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../../models/country_mode.dart';
 import '../../providers/app_state.dart';
 import 'package:provider/provider.dart';
@@ -44,13 +45,15 @@ class _MainShellState extends State<MainShell> {
 
   bool _isSyncingFromRemote = false;
 
+  StreamSubscription? _profileSub;
+
+
   void _initSync() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Listen for profile changes from Firestore to AppState
-      _firestoreService.streamProfile(user.uid).listen((profile) {
+      _profileSub = _firestoreService.streamProfile(user.uid).listen((profile) {
         if (profile != null && mounted) {
-          _isSyncingFromRemote = true; // Block the back-sync
+          _isSyncingFromRemote = true;
           
           if (profile.checklistProgress != null) {
             widget.appState.setChecklistProgress(profile.checklistProgress!);
@@ -59,17 +62,16 @@ class _MainShellState extends State<MainShell> {
             widget.appState.setLanguage(profile.languagePreference!);
           }
           
-          _isSyncingFromRemote = false; // Unblock
+          _isSyncingFromRemote = false;
         }
       });
     }
 
-    // Listen for AppState changes to sync back to Firestore
     widget.appState.addListener(_onAppStateChanged);
   }
 
   void _onAppStateChanged() {
-    if (_isSyncingFromRemote) return; // Skip if the change came from Firestore
+    if (_isSyncingFromRemote) return;
 
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -83,6 +85,7 @@ class _MainShellState extends State<MainShell> {
 
   @override
   void dispose() {
+    _profileSub?.cancel();
     widget.appState.removeListener(_onAppStateChanged);
     super.dispose();
   }
